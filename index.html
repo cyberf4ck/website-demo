@@ -6,7 +6,7 @@
 <title>wiz bizz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=Alegreya:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#07080d;--ink:#2a1606;--ink-soft:#3d2208;--gold:#e0b867;--gold-soft:#cfae72;--cream:#e6d3ad;
@@ -16,8 +16,8 @@
 }
 *{box-sizing:border-box}
 html{background:var(--bg)}
-body{margin:0;min-height:100vh;color:var(--ink);font-family:"IM Fell English",Georgia,serif;
-background:radial-gradient(ellipse at 50% 30%,#161a2a 0%,#0b0d16 55%,#050509 100%) fixed,var(--bg);
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Alegreya,Georgia,serif;
+background:linear-gradient(180deg,rgba(5,5,9,.55),rgba(5,5,9,.7)) fixed,url("tavern.jpg") center/cover fixed no-repeat,var(--bg);
 padding:env(safe-area-inset-top,0px) 1rem calc(4rem + env(safe-area-inset-bottom,0px));overflow-x:hidden}
 
 /* ---------- Night sky effects ---------- */
@@ -90,7 +90,7 @@ form{flex:1 1 22rem;max-width:32rem;transform:rotate(1deg);display:flex;flex-dir
 .form-paper{padding:1.4rem 1.6rem 1.6rem;display:flex;flex-direction:column;gap:.9rem;box-shadow:0 8px 18px rgba(0,0,0,.6)}
 form h2{margin:0;text-align:center;font-family:Cinzel,serif;font-weight:700;font-size:1.4rem;color:#3a1d06}
 label{display:flex;flex-direction:column;gap:.35rem;font-family:Cinzel,serif;font-weight:700;font-size:.875rem;letter-spacing:1px;color:#3a1d06}
-input,textarea{width:100%;font:inherit;font-family:"IM Fell English",Georgia,serif;font-size:1.15rem;letter-spacing:0;
+input,textarea{width:100%;font:inherit;font-family:Alegreya,Georgia,serif;font-size:1.15rem;letter-spacing:0;
 background:rgba(255,236,200,.4);color:var(--ink);border:2px solid #6b4520;border-radius:3px;padding:.55rem .75rem}
 input{height:44px}
 textarea{min-height:6rem;resize:vertical}
@@ -149,7 +149,7 @@ border:.45rem solid var(--brass);background:transparent;box-shadow:0 .2rem .5rem
 .l .ring{right:1.2rem}.r .ring{left:1.2rem}
 .hint{position:absolute;left:50%;bottom:calc(6% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2;
 padding:.5rem 1rem;border-radius:.4rem;background:rgba(10,8,5,.78);color:#e6d8b0;
-font-family:"IM Fell English",Georgia,serif;font-style:italic;font-size:1.05rem;letter-spacing:.03em;white-space:nowrap;transition:opacity .4s ease}
+font-family:Alegreya,Georgia,serif;font-style:italic;font-size:1.05rem;letter-spacing:.03em;white-space:nowrap;transition:opacity .4s ease}
 #door.open .hint{opacity:0}
 #door.open .leaf.l{transform:rotateY(100deg)}
 #door.open .leaf.r{transform:rotateY(-100deg)}
