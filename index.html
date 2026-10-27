@@ -4,115 +4,240 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>wiz bizz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b0d0b;--text:#e9e6dc;--muted:#8d8a80;--line:#2a2d29;--card:#141714;
+  --bg:#07080d;--ink:#2a1606;--ink-soft:#3d2208;--gold:#e0b867;--gold-soft:#cfae72;--cream:#e6d3ad;
   --wood:#3a2515;--wood-dark:#24150b;--wood-light:#4a301b;--iron:#1b1d1c;--brass:#b08a3c;
+  --accent:#4a2378;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{background:var(--bg)}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-padding:env(safe-area-inset-top,0px) 1rem calc(3rem + env(safe-area-inset-bottom,0px))}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:"IM Fell English",Georgia,serif;
+background:radial-gradient(ellipse at 50% 30%,#161a2a 0%,#0b0d16 55%,#050509 100%) fixed,var(--bg);
+padding:env(safe-area-inset-top,0px) 1rem calc(4rem + env(safe-area-inset-bottom,0px));overflow-x:hidden}
 
-/* ---------- The page behind the door ---------- */
-main{max-width:34rem;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:1.25rem;padding-top:1.5rem}
-main img{display:block;max-width:100%;max-height:60vh;width:auto;height:auto;object-fit:contain}
-h1{margin:0;font-family:Georgia,"Times New Roman",serif;font-weight:400;font-style:italic;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:.04em}
-h2{margin:1rem 0 0;font-size:1rem;font-weight:600;color:var(--muted);align-self:flex-start}
-form{width:100%;display:flex;flex-direction:column;gap:.6rem}
-input,textarea{width:100%;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:.5rem;padding:.7rem .85rem;font:inherit}
+/* ---------- Night sky effects ---------- */
+#sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--delay,0s)}
+.mote{position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;background:#ffcf7a;
+box-shadow:0 0 8px 2px rgba(255,170,70,.55);animation:rise var(--d,12s) linear infinite;animation-delay:var(--delay,0s)}
+.lantern{position:absolute;top:8rem;width:30rem;height:30rem;border-radius:50%;
+background:radial-gradient(circle,rgba(255,150,60,.2),transparent 62%);animation:flicker 3s ease-in-out infinite}
+.lantern.l{left:-12rem}.lantern.r{right:-12rem;animation-delay:1.3s}
+#flash{position:fixed;inset:0;pointer-events:none;z-index:6;opacity:0;
+background:radial-gradient(circle at 50% 50%,rgba(210,180,255,.7),rgba(120,70,220,.3) 30%,transparent 65%)}
+#flash.on{animation:flash .9s ease-out forwards}
+#flash svg{position:absolute;left:50%;top:50%;width:160px;height:160px;transform:translate(-50%,-50%) scale(.2)}
+#flash.on svg{animation:burst .9s ease-out forwards}
+
+/* ---------- Layout ---------- */
+main{position:relative;z-index:1;max-width:74rem;margin:0 auto;padding-top:2.5rem;display:flex;flex-direction:column;align-items:center}
+
+/* hanging sign */
+.ropes{display:flex;justify-content:space-between;width:70%;max-width:26rem;height:2.2rem}
+.ropes span{width:4px;background:linear-gradient(90deg,#6b5235,#a88a5e,#6b5235)}
+.sign{position:relative;text-align:center;padding:1.1rem 3rem 1rem;border-style:solid;border-width:10px;
+border-color:#6b4524 #4a2e17 #2a190c #4a2e17;border-radius:6px;box-shadow:0 14px 28px rgba(0,0,0,.8)}
+.sign h1{margin:0;font-family:"Cinzel Decorative",serif;font-weight:700;font-style:italic;font-size:clamp(2.4rem,7vw,3.4rem);line-height:1.1;color:var(--gold);animation:glow 4.5s ease-in-out infinite}
+.sign .tag{margin:.2rem 0 0;font-size:1.2rem;font-style:italic;color:var(--cream)}
+.sign .count{margin:.4rem 0 0;font-family:Cinzel,serif;font-weight:700;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold-soft)}
+
+/* textures */
+.wood{background-color:#4a2e17;background-image:
+  repeating-linear-gradient(90deg,rgba(0,0,0,.12) 0 2px,transparent 2px 12px),
+  repeating-linear-gradient(90deg,rgba(255,210,150,.05) 0 1px,transparent 1px 33px),
+  linear-gradient(180deg,#5c3a1d,#3a2311)}
+.planks{background-color:#2a190c;background-image:
+  linear-gradient(180deg,rgba(255,170,80,.10),transparent 45%),
+  repeating-linear-gradient(90deg,rgba(0,0,0,.65) 0 3px,transparent 3px 96px),
+  repeating-linear-gradient(90deg,rgba(0,0,0,.12) 0 2px,transparent 2px 14px),
+  repeating-linear-gradient(90deg,rgba(255,200,140,.035) 0 1px,transparent 1px 37px),
+  linear-gradient(180deg,#3a2412,#21140a)}
+.paper{background-color:#d9a465;background-image:
+  radial-gradient(ellipse at 45% 40%,rgba(255,226,160,.55) 0%,transparent 60%),
+  radial-gradient(ellipse at center,transparent 50%,rgba(90,45,10,.55) 100%)}
+.nail{position:absolute;width:12px;height:12px;border-radius:50%;
+background:radial-gradient(circle at 35% 35%,#9a948a,#3c3934 55%,#121110);box-shadow:0 2px 3px rgba(0,0,0,.7)}
+.nail.tl{left:8px;top:8px}.nail.tr{right:8px;top:8px}.nail.bl{left:8px;bottom:8px}.nail.br{right:8px;bottom:8px}
+.roller{position:relative;height:24px;margin:0 -22px;border-radius:12px;z-index:2;
+background:linear-gradient(180deg,#f4ecdc 0%,#d8ceba 45%,#9c917e 100%);box-shadow:0 4px 8px rgba(0,0,0,.6)}
+.roller::before,.roller::after{content:"";position:absolute;top:-4px;width:26px;height:32px;border-radius:8px;
+background:linear-gradient(180deg,#8f8a82,#5a5650 55%,#2f2d2a);box-shadow:0 3px 6px rgba(0,0,0,.6)}
+.roller::before{left:-8px}.roller::after{right:-8px}
+.curl{height:30px;margin:0 -2px -2px;border-radius:0 0 4px 4px;
+background:linear-gradient(180deg,#a06e35 0%,#e1b077 45%,#b07c40 80%,#7a5226 100%);box-shadow:0 6px 10px rgba(0,0,0,.5)}
+.stoneframe{border-style:solid;border-width:16px;border-color:#a39e94 #7c776f #57534d #8c877e;background:#1a120a;
+box-shadow:0 10px 22px rgba(0,0,0,.75),inset 0 0 0 2px rgba(0,0,0,.35)}
+.seal{display:inline-block;width:26px;height:26px;border-radius:50%;flex:none;
+background:radial-gradient(circle at 35% 35%,#e04848,#8f1414 60%,#5a0b0b);box-shadow:0 2px 4px rgba(0,0,0,.6)}
+
+/* the big board */
+.board{width:100%;margin-top:1.75rem;border-style:solid;border-width:clamp(18px,3.5vw,40px);
+border-color:#5b3a1e #3f2713 #24160a #3f2713;border-radius:6px;
+box-shadow:0 0 0 6px #1a0f06,0 0 0 8px #4a2e17,0 30px 60px rgba(0,0,0,.85)}
+.board-inner{padding:clamp(24px,4vw,48px) clamp(16px,3vw,40px) 56px;display:flex;flex-direction:column;gap:3rem;
+box-shadow:inset 0 18px 30px rgba(0,0,0,.75),inset 0 -10px 24px rgba(0,0,0,.6)}
+.top-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:3rem}
+.portrait{margin:0;transform:rotate(-3deg);max-width:100%}
+.portrait img{display:block;width:320px;max-width:100%;height:auto;filter:sepia(.55) brightness(.85) contrast(1.1)}
+
+/* form scroll */
+form{flex:1 1 22rem;max-width:32rem;transform:rotate(1deg);display:flex;flex-direction:column}
+.form-paper{padding:1.4rem 1.6rem 1.6rem;display:flex;flex-direction:column;gap:.9rem;box-shadow:0 8px 18px rgba(0,0,0,.6)}
+form h2{margin:0;text-align:center;font-family:Cinzel,serif;font-weight:700;font-size:1.4rem;color:#3a1d06}
+label{display:flex;flex-direction:column;gap:.35rem;font-family:Cinzel,serif;font-weight:700;font-size:.875rem;letter-spacing:1px;color:#3a1d06}
+input,textarea{width:100%;font:inherit;font-family:"IM Fell English",Georgia,serif;font-size:1.15rem;letter-spacing:0;
+background:rgba(255,236,200,.4);color:var(--ink);border:2px solid #6b4520;border-radius:3px;padding:.55rem .75rem}
+input{height:44px}
 textarea{min-height:6rem;resize:vertical}
-input:focus,textarea:focus{outline:2px solid #6b705f;outline-offset:1px}
-.post{align-self:flex-start;background:var(--text);color:var(--bg);border:0;border-radius:.5rem;padding:.65rem 1.2rem;font:inherit;font-weight:600;cursor:pointer}
-.post:disabled{opacity:.5;cursor:default}
+input::placeholder,textarea::placeholder{color:#7a5428;font-style:italic}
+input:focus,textarea:focus{outline:3px solid #8e5cd9;outline-offset:2px}
+.post{align-self:center;display:flex;align-items:center;gap:.6rem;height:48px;padding:0 1.6rem;margin-top:.25rem;
+border:2px solid #c9a056;border-radius:6px;background:var(--accent);color:#fbefd8;
+font-family:Cinzel,serif;font-weight:700;font-size:1rem;letter-spacing:1.5px;cursor:pointer;
+animation:pulse 2.6s ease-in-out infinite;transition:transform .15s}
+.post:hover{transform:translateY(-2px) scale(1.03)}
+.post:focus-visible{outline:3px solid #f3d699;outline-offset:3px}
+.post:disabled{opacity:.6;cursor:default;transform:none}
+.post svg{width:18px;height:18px}
 .hp{position:absolute;left:-9999px;height:0;overflow:hidden}
-#status{min-height:1.2em;margin:0;font-size:.9rem;color:var(--muted);align-self:flex-start}
-#list{list-style:none;padding:0;margin:0;width:100%;display:flex;flex-direction:column;gap:.75rem}
-#list li{background:var(--card);border:1px solid var(--line);border-radius:.5rem;padding:.75rem 1rem}
-#list time{margin-left:.6rem;font-size:.8rem;color:var(--muted)}
-#list p{margin:.3rem 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
-.empty{color:var(--muted)}
+#status{min-height:1.2em;margin:0;text-align:center;font-style:italic;color:var(--ink-soft)}
 
-/* ---------- Sound toggle (appears after the door opens) ---------- */
+/* notices */
+#list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:2.5rem 2.25rem;align-items:start}
+#list li{position:relative;display:flex;flex-direction:column}
+#list .roller{margin:0 -14px}
+.note{position:relative;padding:26px 20px 16px;min-height:150px;display:flex;flex-direction:column;gap:.75rem;box-shadow:0 8px 16px rgba(0,0,0,.6)}
+.note p{margin:0;flex-grow:1;font-size:1.2rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.note footer{display:flex;justify-content:space-between;align-items:center;gap:.5rem;border-top:1px solid rgba(70,35,8,.4);padding-top:.5rem;font-size:.95rem;color:var(--ink-soft)}
+.note b{font-family:Cinzel,serif}
+.note .meta{display:flex;align-items:center;gap:.5rem;font-style:italic}
+#list li.empty{grid-column:1/-1;justify-self:center;max-width:24rem;transform:rotate(-1deg)}
+
+/* ---------- Sound toggle ---------- */
 #mute{position:fixed;top:calc(.75rem + env(safe-area-inset-top,0px));right:.75rem;z-index:5;
-background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:.5rem;padding:.4rem .75rem;font:inherit;font-size:.85rem;cursor:pointer}
-#mute:hover{color:var(--text)}
+background:#1a120a;color:var(--gold-soft);border:1px solid #4a2e17;border-radius:.5rem;padding:.45rem .8rem;
+font-family:Cinzel,serif;font-size:.85rem;cursor:pointer}
+#mute:hover{color:var(--gold)}
 #mute:focus-visible,#door:focus-visible .hint{outline:2px solid #c9b27a;outline-offset:3px}
 
-/* ---------- The door ---------- */
+/* ---------- The door (unchanged) ---------- */
 #door{position:fixed;inset:0;z-index:10;display:block;width:100%;height:100%;padding:0;border:0;margin:0;
-background:transparent;cursor:pointer;perspective:1400px;overflow:hidden;font:inherit;color:inherit;
-transition:opacity .5s ease}
+background:transparent;cursor:pointer;perspective:1400px;overflow:hidden;font:inherit;color:inherit;transition:opacity .5s ease}
 #door.gone{opacity:0;pointer-events:none}
-.leaf{position:absolute;top:0;bottom:0;width:50%;backface-visibility:hidden;
-transition:transform 1.7s cubic-bezier(.55,.05,.25,1);
+.leaf{position:absolute;top:0;bottom:0;width:50%;backface-visibility:hidden;transition:transform 1.7s cubic-bezier(.55,.05,.25,1);
 background:
   repeating-linear-gradient(90deg,rgba(0,0,0,.5) 0 2px,transparent 2px 3.4rem),
   repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),
   linear-gradient(90deg,var(--wood-dark),var(--wood) 35%,var(--wood-light) 60%,var(--wood-dark))}
 .leaf.l{left:0;transform-origin:left center;box-shadow:inset -.6rem 0 1.5rem rgba(0,0,0,.55)}
-.leaf.r{right:0;transform-origin:right center;box-shadow:inset .6rem 0 1.5rem rgba(0,0,0,.55)}
-.leaf.r{background:
+.leaf.r{right:0;transform-origin:right center;box-shadow:inset .6rem 0 1.5rem rgba(0,0,0,.55);
+background:
   repeating-linear-gradient(90deg,rgba(0,0,0,.5) 0 2px,transparent 2px 3.4rem),
   repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px),
   linear-gradient(90deg,var(--wood-dark),var(--wood-light) 40%,var(--wood) 65%,var(--wood-dark))}
 .band{position:absolute;left:0;right:0;height:2.4rem;
-background:
-  radial-gradient(circle at 1.4rem 50%,#555a56 0 .22rem,transparent .26rem) 0 0/3.2rem 100% repeat-x,
-  linear-gradient(180deg,#2a2c2b,var(--iron) 50%,#0f1110);
-box-shadow:0 .25rem .6rem rgba(0,0,0,.6)}
-.band.top{top:18%}
-.band.bottom{bottom:18%}
+background:radial-gradient(circle at 1.4rem 50%,#555a56 0 .22rem,transparent .26rem) 0 0/3.2rem 100% repeat-x,
+  linear-gradient(180deg,#2a2c2b,var(--iron) 50%,#0f1110);box-shadow:0 .25rem .6rem rgba(0,0,0,.6)}
+.band.top{top:18%}.band.bottom{bottom:18%}
 .ring{position:absolute;top:50%;width:3.4rem;height:3.4rem;margin-top:-1.7rem;border-radius:50%;
-border:.45rem solid var(--brass);background:transparent;
-box-shadow:0 .2rem .5rem rgba(0,0,0,.7),inset 0 0 .3rem rgba(0,0,0,.6)}
-.l .ring{right:1.2rem}
-.r .ring{left:1.2rem}
+border:.45rem solid var(--brass);background:transparent;box-shadow:0 .2rem .5rem rgba(0,0,0,.7),inset 0 0 .3rem rgba(0,0,0,.6)}
+.l .ring{right:1.2rem}.r .ring{left:1.2rem}
 .hint{position:absolute;left:50%;bottom:calc(6% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2;
 padding:.5rem 1rem;border-radius:.4rem;background:rgba(10,8,5,.78);color:#e6d8b0;
-font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:1.05rem;letter-spacing:.03em;white-space:nowrap;
-transition:opacity .4s ease}
+font-family:"IM Fell English",Georgia,serif;font-style:italic;font-size:1.05rem;letter-spacing:.03em;white-space:nowrap;transition:opacity .4s ease}
 #door.open .hint{opacity:0}
 #door.open .leaf.l{transform:rotateY(100deg)}
 #door.open .leaf.r{transform:rotateY(-100deg)}
-
-/* warm light spilling through the gap as the door opens */
 .glow{position:absolute;inset:0;pointer-events:none;opacity:0;
-background:radial-gradient(ellipse at center,rgba(255,226,150,.55),rgba(255,226,150,0) 60%);
-transition:opacity .9s ease .1s}
+background:radial-gradient(ellipse at center,rgba(255,226,150,.55),rgba(255,226,150,0) 60%);transition:opacity .9s ease .1s}
 #door.open .glow{opacity:1;animation:fadeglow 1.4s ease 1s forwards}
+
 @keyframes fadeglow{to{opacity:0}}
+@keyframes twinkle{0%,100%{opacity:.1;transform:scale(.6) rotate(0deg)}50%{opacity:.8;transform:scale(1.1) rotate(20deg)}}
+@keyframes rise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:.9}100%{transform:translateY(-110vh) translateX(40px);opacity:0}}
+@keyframes flicker{0%,100%{opacity:.8;transform:scale(1)}35%{opacity:1;transform:scale(1.05)}65%{opacity:.7;transform:scale(.97)}}
+@keyframes glow{0%,100%{text-shadow:0 2px 0 #120a04,0 0 8px rgba(224,184,103,.35)}50%{text-shadow:0 2px 0 #120a04,0 0 20px rgba(255,205,110,.8),0 0 40px rgba(150,100,255,.35)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(150,100,255,.4),inset 0 1px 0 rgba(255,255,255,.2)}50%{box-shadow:0 0 22px rgba(160,110,255,.85),inset 0 1px 0 rgba(255,255,255,.2)}}
+@keyframes flash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+@keyframes burst{0%{transform:translate(-50%,-50%) scale(.2) rotate(0deg);opacity:1}100%{transform:translate(-50%,-50%) scale(3.2) rotate(90deg);opacity:0}}
 
 @media (max-width:30rem){
   .ring{width:2.6rem;height:2.6rem;margin-top:-1.3rem;border-width:.35rem}
   .l .ring{right:.6rem}.r .ring{left:.6rem}
   .hint{font-size:.95rem}
+  .sign{padding:1rem 1.5rem .9rem}
+  .roller{margin:0 -12px}
 }
 @media (prefers-reduced-motion:reduce){
   .leaf{transition:none}
   #door.open .leaf.l,#door.open .leaf.r{transform:none}
   #door.open .glow{animation:none;opacity:0}
+  .star,.mote,.lantern,.sign h1,.post,#flash.on,#flash.on svg{animation:none}
 }
 </style>
 </head>
 <body>
 
+<div id="sky" aria-hidden="true">
+  <div class="lantern l"></div>
+  <div class="lantern r"></div>
+</div>
+
+<div id="flash" aria-hidden="true">
+  <svg viewBox="0 0 24 24"><path d="M12 0 L14.2 9.8 L24 12 L14.2 14.2 L12 24 L9.8 14.2 L0 12 L9.8 9.8 Z" fill="#eadcff"/></svg>
+</div>
+
 <main id="page" inert>
-<img src="wizard.png" alt="A man in a wizard hat and robe with a long white beard, smoking a pipe, holding a fan of cash and raising his middle finger">
-<h1>wiz bizz</h1>
 
-<h2>Leave a message</h2>
-<form id="form" autocomplete="off">
-<input id="nameEl" type="text" maxlength="40" placeholder="Your name" required>
-<textarea id="msgEl" maxlength="300" placeholder="Your message (max 300 characters)" required></textarea>
-<div class="hp" aria-hidden="true"><input id="hp" type="text" tabindex="-1" placeholder="Leave this empty"></div>
-<button id="btn" class="post" type="submit">Post</button>
-<p id="status" role="status"></p>
-</form>
+  <header style="display:flex;flex-direction:column;align-items:center">
+    <div class="ropes" aria-hidden="true"><span></span><span></span></div>
+    <div class="sign wood">
+      <span class="nail tl"></span><span class="nail tr"></span>
+      <h1>wiz bizz</h1>
+      <p class="tag">wizzards only fool!!1</p>
+      <p class="count" id="count">✦ the notice board ✦</p>
+    </div>
+  </header>
 
-<h2>Messages</h2>
-<ul id="list"></ul>
+  <section class="board" aria-label="Notice board">
+    <div class="board-inner planks">
+
+      <div class="top-row">
+        <figure class="portrait stoneframe">
+          <img src="wizard.png" width="788" height="817" alt="A man in a wizard hat and robe with a long white beard, smoking a pipe, holding a fan of cash and raising his middle finger">
+        </figure>
+
+        <form id="form" autocomplete="off">
+          <div class="roller" aria-hidden="true"></div>
+          <div class="form-paper paper">
+            <h2>Pin a Notice</h2>
+            <label>Your name
+              <input id="nameEl" type="text" maxlength="40" placeholder="A wandering stranger" required>
+            </label>
+            <label>Your message
+              <textarea id="msgEl" maxlength="300" placeholder="Hear ye, hear ye… (max 300 characters)" required></textarea>
+            </label>
+            <div class="hp" aria-hidden="true"><input id="hp" type="text" tabindex="-1" placeholder="Leave this empty"></div>
+            <button id="btn" class="post" type="submit">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 0 L14.2 9.8 L24 12 L14.2 14.2 L12 24 L9.8 14.2 L0 12 L9.8 9.8 Z" fill="#f3d699"/></svg>
+              Cast to the board
+            </button>
+            <p id="status" role="status"></p>
+          </div>
+          <div class="roller" aria-hidden="true"></div>
+        </form>
+      </div>
+
+      <h2 style="position:absolute;left:-9999px">Messages</h2>
+      <ul id="list"></ul>
+
+    </div>
+  </section>
 </main>
 
 <button id="mute" type="button" aria-pressed="false" hidden>Sound on</button>
@@ -153,6 +278,38 @@ muteBtn.addEventListener("click", () => {
   muteBtn.setAttribute("aria-pressed", String(snd.muted));
 });
 
+// ---- Magic sky: twinkling stars + floating sparks --------------------------
+(function makeSky(){
+  const sky = document.getElementById("sky");
+  const NS = "http://www.w3.org/2000/svg";
+  const STAR = "M12 0 L14.2 9.8 L24 12 L14.2 14.2 L12 24 L9.8 14.2 L0 12 L9.8 9.8 Z";
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElementNS(NS, "svg");
+    s.setAttribute("viewBox", "0 0 24 24");
+    s.classList.add("star");
+    const size = 5 + Math.random() * 10;
+    s.style.cssText = `left:${Math.random()*98}%;top:${Math.random()*98}%;width:${size}px;height:${size}px;--d:${2.5+Math.random()*3}s;--delay:${Math.random()*4}s`;
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("d", STAR);
+    p.setAttribute("fill", Math.random() > .5 ? "#e8cf96" : "#a98be0");
+    s.append(p);
+    sky.append(s);
+  }
+  for (let i = 0; i < 12; i++) {
+    const m = document.createElement("span");
+    m.className = "mote";
+    m.style.cssText = `left:${Math.random()*100}%;--d:${10+Math.random()*8}s;--delay:${Math.random()*12}s`;
+    sky.append(m);
+  }
+})();
+
+const flashEl = document.getElementById("flash");
+function magicFlash(){
+  flashEl.classList.remove("on");
+  void flashEl.offsetWidth; // restart the animation
+  flashEl.classList.add("on");
+}
+
 // ---- Supabase connection (both values are safe to be public) -------------
 const SUPABASE_URL = "https://ijnqezquhvstgvbsrfvr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_LoEVUDlEkKvbj7Yqnv1z1w_JuhTvjeS";
@@ -162,15 +319,61 @@ const API = SUPABASE_URL + "/rest/v1/messages";
 const headers = { apikey: SUPABASE_KEY };
 const list = document.getElementById("list");
 const statusEl = document.getElementById("status");
+const countEl = document.getElementById("count");
 const btn = document.getElementById("btn");
 let lastPost = 0;
 
+const STYLES = ["nailed", "scroll", "framed", "curl"];
+const TILTS = [-2.5, 1.8, -1, 2.6, -1.8, 1];
+const DROPS = [0, 24, 8, 32, 12, 0];
+
 function setStatus(t){ statusEl.textContent = t; }
+
+function el(tag, cls){ const e = document.createElement(tag); if (cls) e.className = cls; return e; }
+
+function timeAgo(iso){
+  const s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60) return "just now";
+  if (s < 3600) return Math.floor(s / 60) + "m ago";
+  if (s < 86400) return Math.floor(s / 3600) + "h ago";
+  if (s < 86400 * 7) return Math.floor(s / 86400) + "d ago";
+  return new Date(iso).toLocaleDateString();
+}
+
+// Builds one parchment notice. All text goes in with textContent, so nobody can inject code.
+function makeNotice(name, message, when, i){
+  const style = STYLES[i % STYLES.length];
+  const li = el("li");
+  li.style.transform = `rotate(${TILTS[i % TILTS.length]}deg)`;
+  li.style.marginTop = DROPS[i % DROPS.length] + "px";
+
+  if (style === "scroll") li.append(el("div", "roller"));
+
+  const holder = el("div", style === "framed" ? "stoneframe" : "");
+  const note = el("article", "note paper");
+  if (style === "nailed") for (const c of ["tl","tr","bl","br"]) note.append(el("span", "nail " + c));
+
+  const p = el("p"); p.textContent = message;
+  const foot = el("footer");
+  const b = el("b"); b.textContent = "— " + name;
+  const meta = el("span", "meta");
+  const t = el("time"); t.textContent = when;
+  meta.append(t);
+  if (style === "scroll" || i % 3 === 0) meta.append(el("span", "seal"));
+  foot.append(b, meta);
+  note.append(p, foot);
+  holder.append(note);
+  li.append(holder);
+
+  if (style === "curl") li.append(el("div", "curl"));
+  if (style === "scroll") li.append(el("div", "roller"));
+  return li;
+}
+
 function note(t){
   list.textContent = "";
-  const li = document.createElement("li");
-  li.className = "empty";
-  li.textContent = t;
+  const li = makeNotice("the board", t, "", 0);
+  li.classList.add("empty");
   list.append(li);
 }
 
@@ -179,19 +382,10 @@ async function load(){
     const r = await fetch(API + "?select=name,message,created_at&approved=eq.true&order=created_at.desc&limit=50", { headers });
     if (!r.ok) throw new Error(r.status);
     const rows = await r.json();
+    countEl.textContent = `✦ ${rows.length} notice${rows.length === 1 ? "" : "s"} pinned ✦`;
     if (!rows.length) { note("No messages yet. Be the first!"); return; }
     list.textContent = "";
-    for (const m of rows) {
-      const li = document.createElement("li");
-      const b = document.createElement("b");
-      b.textContent = m.name;
-      const t = document.createElement("time");
-      t.textContent = new Date(m.created_at).toLocaleDateString();
-      const p = document.createElement("p");
-      p.textContent = m.message;
-      li.append(b, t, p);
-      list.append(li);
-    }
+    rows.forEach((m, i) => list.append(makeNotice(m.name, m.message, timeAgo(m.created_at), i)));
   } catch (e) {
     note("Couldn’t load messages right now.");
   }
@@ -214,7 +408,8 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     if (!r.ok) throw new Error(r.status);
     e.target.reset();
     lastPost = Date.now();
-    setStatus("Thanks! Your message will show up once it’s approved.");
+    if (!reduceMotion) magicFlash();
+    setStatus("Thanks! Your notice will be pinned once it’s approved.");
   } catch (err) {
     setStatus("Couldn’t send that. Try again in a moment.");
   }
