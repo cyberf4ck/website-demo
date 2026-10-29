@@ -439,6 +439,20 @@ document.getElementById("form").addEventListener("submit", async (e) => {
 load();
 </script>
 
-<!-- Visual effects: delete or comment out a line to turn that effect off -->
-<script src="explosion.js"></script></body>
+<!-- Visual effects: loads every effect listed in effects/list.json.
+     GitHub writes that list automatically from the .js files in the effects folder.
+     To add an effect, upload its files into "effects". To remove one, delete them. -->
+<script>
+fetch("effects/list.json", { cache: "no-store" })
+  .then(r => r.ok ? r.json() : [])
+  .then(names => {
+    for (const name of names) {
+      const s = document.createElement("script");
+      s.src = "effects/" + encodeURIComponent(name);
+      document.body.append(s);
+    }
+  })
+  .catch(() => {}); // no list = no effects, the site still works
+</script>
+</body>
 </html>
