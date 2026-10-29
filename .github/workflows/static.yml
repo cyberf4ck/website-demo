@@ -31,6 +31,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      # NEW: look in the "effects" folder and write the list of effects
+      # (every .js file) to effects/list.json, which index.html reads.
+      - name: Build effects list
+        run: |
+          mkdir -p effects
+          python3 -c "import glob, json, os; names = sorted(os.path.basename(f) for f in glob.glob('effects/*.js')); json.dump(names, open('effects/list.json', 'w')); print('Effects found:', names)"
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
